@@ -26,7 +26,7 @@ const AdminPanel = () => {
   // ✅ Fetch all listings (public route)
   const fetchListings = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/listings");
+      const res = await axios.get("https://roomssarthi.onrender.com/api/listings");
       setListings(res.data);
     } catch (err) {
       console.error("Error fetching listings:", err);
@@ -69,7 +69,7 @@ const AdminPanel = () => {
       images.forEach((img) => formData.append("images", img));
 
       // ✅ Include JWT token in header
-      await axios.post("http://localhost:5000/api/listings", formData, {
+      await axios.post("https://roomssarthi.onrender.com/api/listings", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -111,7 +111,7 @@ const AdminPanel = () => {
     if (!window.confirm("Are you sure you want to delete this listing?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/listings/${id}`, {
+      await axios.delete(`https://roomssarthi.onrender.com/api/listings/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // ✅ Include token
         },
