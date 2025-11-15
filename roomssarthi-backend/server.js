@@ -17,12 +17,13 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://roomssaarthi.vercel.app",
+      "https://roomssaarthi.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
 
 /* ============================================
    📦 Middleware
