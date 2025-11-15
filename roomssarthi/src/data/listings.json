@@ -1,0 +1,46 @@
+[
+  {
+    "city": "KarveNagar",
+    "title": "PG near KarveNagar",
+    "price": "₹8,000/mo",
+    "description": "Fully furnished PG with attached bathroom and Wi-Fi.",
+    "images": [
+      "https://res.cloudinary.com/dh2qbxefv/image/upload/v1759345068/WhatsApp_Image_2025-10-02_at_00.08.11_2_hnpojr.jpg",
+      "https://res.cloudinary.com/dh2qbxefv/image/upload/v1759345105/WhatsApp_Image_2025-10-02_at_00.08.11_1_r73mjr.jpg"
+    ],
+    "amenities": ["Wi-Fi", "AC", "Laundry", "24/7 Security"]
+  },
+  {
+    "city": "KarveNagar",
+    "title": "Flatshare in KarveNagar",
+    "price": "₹12,000/mo",
+    "description": "Spacious shared apartment with all facilities included.",
+    "images": [
+      "https://images.unsplash.com/photo-1572120360610-d971b9b8b0a1",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be"
+    ],
+    "amenities": ["Wi-Fi", "Kitchen", "Parking", "Gym Access"]
+  },
+  {
+    "city": "HingeWadi",
+    "title": "PG near HingeWadi",
+    "price": "₹15,000/mo",
+    "description": "Modern PG with meals included and laundry service.",
+    "images": [
+      "https://images.unsplash.com/photo-1598928506310-7f0f4fc48477",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+    ],
+    "amenities": ["Meals", "Wi-Fi", "AC", "24/7 Security"]
+  },
+  {
+    "city": "Warje",
+    "title": "Shared room in Warje",
+    "price": "₹10,000/mo",
+    "description": "Comfortable shared room with study table and wardrobe.",
+    "images": [
+      "https://images.unsplash.com/photo-1572120360610-d971b9b8b0a1",
+      "https://images.unsplash.com/photo-1570129477492-45c003edd2be"
+    ],
+    "amenities": ["Wi-Fi", "AC", "Study Table", "Wardrobe"]
+  }
+]

@@ -1,0 +1,26 @@
+### Create a new listing
+POST http://localhost:5000/api/listings
+Content-Type: multipart/form-data
+
+--boundary
+Content-Disposition: form-data; name="title"
+
+2BHK Flat
+--boundary
+Content-Disposition: form-data; name="description"
+
+Spacious flat near metro
+--boundary
+Content-Disposition: form-data; name="city"
+
+Bangalore
+--boundary
+Content-Disposition: form-data; name="price"
+
+15000
+--boundary
+Content-Disposition: form-data; name="image"; filename="room.jpg"
+Content-Type: image/jpeg
+
+< ./room.jpg
+--boundary--

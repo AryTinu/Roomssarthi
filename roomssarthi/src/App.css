@@ -1,0 +1,472 @@
+/* ================================
+   GLOBAL STYLES
+================================= */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+    background-color: #efefef;
+}
+/*Login buton*/
+/* Brand text inside Login page */
+.brand-text {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/*Progress Bar*/
+.progress {
+  height: 8px;
+  border-radius: 8px;
+}
+
+.progress-bar {
+  font-size: 0.75rem;
+  line-height: 8px;
+}
+
+
+/* Room = black AMOLED look */
+.brand-room {
+  color: #000; /* or #0a0a0a for deeper AMOLED black */
+}
+
+/* Saarthi = fresh green accent */
+.brand-saarthi {
+  color: #00b16a; /* Green tone consistent with Navbar */
+  margin-left: 3px;
+}
+
+.left-panel {
+  background: linear-gradient(135deg, #1fb84d 5%, #017805 100%);
+}
+
+.btn-login {
+  background: linear-gradient(135deg, #1fb84d 0%, #017805 100%);
+  color: white;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+}
+
+@media (max-width: 768px) {
+  .left-panel {
+    text-align: center;
+  }
+}
+a {
+    text-decoration: none;
+}
+
+h1, h2, h3 {
+    font-family: 'Raleway', Helvetica, sans-serif;
+}
+
+/* ================================
+   NAVBAR STYLES
+================================= */
+.custom-navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.room-black {
+    color: #000000;
+    font-weight: 700;
+}
+
+.saarthi-green {
+    color: #0eabff; /* bright cyan-blue accent */
+    font-weight: 700;
+}
+
+/* Navbar links */
+.nav-link-custom {
+    color: #333 !important;
+    font-weight: 500;
+    margin: 0 10px;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link-custom:hover {
+    color: #08A045 !important; /* hover accent */
+}
+
+/* Animated underline on hover */
+.nav-link-custom::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: #208900;
+    transition: width 0.3s ease;
+}
+
+.nav-link-custom:hover::after {
+    width: 100%;
+}
+
+/* Gradient login button */
+.btn-gradient {
+    background: linear-gradient(90deg, #02882a 4%, #017805 50%);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 30px;
+    padding: 8px 20px;
+    transition: 0.3s;
+}
+
+.btn-gradient:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* ================================
+   APP HEADER & LOGO
+================================= */
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ================================
+   HERO SECTION
+================================= */
+.hero-section {
+    background-color: #242834;
+    color: #fff;
+    padding: 80px 0;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+/* Hero form inputs */
+.hero-form .form-control {
+    border-radius: 30px 0 0 30px;
+    padding: 10px 20px;
+}
+
+.hero-form .btn {
+    border-radius: 0 30px 30px 0;
+    padding: 10px 20px;
+}
+
+/* ================================
+   CARDS
+================================= */
+.card {
+    border-radius: 6px;
+    background: #fff;
+    border: none;
+    box-shadow: 
+        0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 3px 1px -2px rgba(0, 0, 0, 0.2),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 
+        0 8px 16px rgba(0, 0, 0, 0.15),
+        0 6px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+}
+
+/* ================================
+   SECTIONS
+================================= */
+.section-title {
+    font-weight: 600;
+    margin-bottom: 40px;
+    text-align: center;
+    font-family: "Roboto Slab", "Times New Roman", serif;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+.section-cards {
+    z-index: 3;
+    position: relative;
+    padding: 60px 0;
+}
+
+.section-gray {
+    background: #f5f5f5;
+}
+
+/* ================================
+   FEATURES GRID
+================================= */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2rem;
+}
+
+.feature-card {
+    border: 2px solid rgba(182, 255, 0, 0.2);
+    background-color: #101010;
+    color: white;
+    border-radius: 12px;
+    text-align: center;
+    padding: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+.feature-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #e8f5e9;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px auto;
+}
+
+.card-caption {
+    font-family: "Roboto Slab", "Times New Roman", serif;
+    font-weight: 600;
+    font-size: 1.2em;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.card-description {
+    color: #555;
+    font-size: 0.95em;
+    line-height: 1.6;
+}
+
+/* ================================
+   MODALS
+================================= */
+.modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+}
+
+.modal-header {
+    border-bottom: none;
+    background-color: #f8f9fa;
+    padding: 1rem 1.5rem;
+}
+
+.modal-title {
+    color: #6366f1;
+    font-weight: 600;
+    font-size: 1.5rem;
+}
+
+.modal-body {
+    background-color: #f9fafb;
+}
+
+.modal-body .form-control {
+    border-radius: 30px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #d1d5db;
+}
+
+.modal-body .btn {
+    border-radius: 50px;
+}
+
+.modal-footer {
+    border-top: none;
+    background-color: #f8f9fa;
+}
+
+.modal-body p {
+    font-size: 1rem;
+    color: #374151;
+}
+
+.modal-body h6 {
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.modal-body ul li {
+    list-style: disc;
+    margin-left: 1rem;
+}
+
+.modal-body .text-primary {
+    color: #6366f1 !important;
+    font-weight: 600;
+}
+
+/* ================================
+   HOVER CARDS
+================================= */
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+   CITIES SECTION (NEW ANIMATION)
+================================= */
+.containerm {
+    min-height: 100vh;
+    overflow: hidden;
+    width: 100%;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.image {
+    overflow: hidden;
+    height: 300px;
+    width: 300px;
+    position: relative;
+    cursor: pointer;
+    margin: 15px;
+    box-shadow: 0 0 25px 1px rgba(0, 0, 0, 0.3);
+    transition: 0.5s;
+    background-color: #555;
+    border-radius: 12px;
+}
+
+.image:after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-140%, -50%);
+    background-color: #007bff;
+    opacity: 0.8;
+    border-radius: 50%;
+    transition: 0.8s;
+}
+
+.image:hover:after {
+    transform: translate(-50%, -50%);
+}
+
+.image img {
+    position: absolute;
+    height: 110%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: 0.8s;
+    border-radius: 12px;
+}
+
+.image:hover img {
+    transform: translate(-50%, -50%) scale(1.3) rotate(20deg);
+}
+
+.image i {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-2000px, -50%);
+    color: #fff;
+    transition: 0.8s;
+    transition-timing-function: ease-in;
+}
+
+.image:hover i {
+    transform: translate(-50%, -50%);
+    transition-timing-function: ease;
+}
+
+.image::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 3;
+}
+
+/* ================================
+   UTILITY CLASSES
+================================= */
+.saarthi-green {
+    color: #08A045; /* neon green */
+    font-weight: bold;
+}
+
+.room-black {
+    color: #000000; /* true black for AMOLED */
+    font-weight: bold;
+}
