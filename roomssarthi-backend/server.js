@@ -11,11 +11,14 @@ import emailRoutes from "./routes/emailRoutes.js";
 const app = express();
 
 /* ============================================
-   ⭐ CORS FIX (Express v5 Safe)
+   ⭐ FIXED CORS (Express v5 Safe)
 =============================================== */
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://roomssaarthi.vercel.app",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
