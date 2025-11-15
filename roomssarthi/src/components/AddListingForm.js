@@ -9,7 +9,7 @@ export default function AddListingForm() {
     title: "",
     city: "",
     location: "",
-    type: "rooms", // default
+    type: "rooms",
     gender: "any",
     price: "",
     description: "",
@@ -24,15 +24,37 @@ export default function AddListingForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Convert amenities and images from comma-separated to arrays
+    // Convert amenities and images into arrays
     const dataToSend = {
       ...formData,
-      amenities: formData.amenities.split(",").map((a) => a.trim()),
-      images: formData.images.split(",").map((i) => i.trim()),
+      amenities: formData.amenities
+        .split(",")
+        .map((a) => a.trim())
+        .filter((a) => a),
+      images: formData.images
+        .split(",")
+        .map((i) => i.trim())
+        .filter((i) => i),
     };
 
     try {
-      await axios.post("https://roomssarthi.onrender.com/api/listings", dataToSend);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("You must be logged in to add a listing.");
+        return;
+      }
+
+      await axios.post(
+        "https://roomssarthi.onrender.com/api/listings",
+        dataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ⭐ IMPORTANT
+          },
+        }
+      );
+
       alert("Listing submitted successfully! We'll contact you soon.");
 
       // Reset form
