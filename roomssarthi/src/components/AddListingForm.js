@@ -32,7 +32,7 @@ export default function AddListingForm() {
     };
 
     try {
-      await axios.post("http://localhost:5000/api/listings", dataToSend);
+      await axios.post("https://roomssarthi.onrender.com/api/listings", dataToSend);
       alert("Listing submitted successfully! We'll contact you soon.");
 
       // Reset form
