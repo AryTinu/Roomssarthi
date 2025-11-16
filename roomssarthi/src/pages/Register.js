@@ -47,7 +47,7 @@ const Register = () => {
     setErrors({});
 
     try {
-      const response = await fetch("https://roomssarthi.onrender.com/api/auth/login", {
+      const response = await fetch("https://roomssarthi.onrender.com/api/auth/Register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
