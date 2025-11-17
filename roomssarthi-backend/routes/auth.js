@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import dotenv from "dotenv";
 import nodemailer from "nodemailer";
+import crypto from "crypto";   // <-- added
 
 dotenv.config();
 const router = express.Router();
@@ -33,8 +34,6 @@ const sendWelcomeEmail = async (name, email) => {
     <div style="font-family: Poppins, sans-serif; color: #333;">
       <h2 style="color: #08A045;">Welcome to RoomSaarthi, ${name}! 🎉</h2>
       <p>We’re thrilled to have you here.</p>
-
-      <p>You can now:</p>
       <ul>
         <li>🔎 Browse rooms, PGs & flats</li>
         <li>🤝 Find trusted roommates</li>
@@ -59,33 +58,27 @@ const sendWelcomeEmail = async (name, email) => {
       subject: `Welcome to RoomSaarthi, ${name}! 🎉`,
       html,
     });
-
-    console.log("📩 Welcome email sent:", email);
   } catch (err) {
     console.error("❌ Error sending welcome email:", err);
   }
 };
 
 /* ============================================
-   📝 REGISTER USER + SEND GREETING EMAIL
+   📝 REGISTER USER
 =============================================== */
 router.post("/Register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Validate fields
     if (!name || !email || !password)
       return res.status(400).json({ message: "All fields are required" });
 
-    // Check if user exists
     const existing = await User.findOne({ email });
     if (existing)
       return res.status(400).json({ message: "User already exists" });
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Save user
     const newUser = new User({
       name,
       email,
@@ -95,7 +88,6 @@ router.post("/Register", async (req, res) => {
 
     await newUser.save();
 
-    // Send welcome email (async)
     sendWelcomeEmail(name, email);
 
     return res.status(201).json({
@@ -115,21 +107,17 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate
     if (!email || !password)
       return res.status(400).json({ message: "All fields are required" });
 
-    // Find user
     const user = await User.findOne({ email });
     if (!user)
       return res.status(404).json({ message: "User not found" });
 
-    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    // Create token
     const token = jwt.sign(
       { id: user._id, isAdmin: user.isAdmin },
       process.env.JWT_SECRET,
@@ -149,6 +137,93 @@ router.post("/login", async (req, res) => {
 
   } catch (error) {
     console.error("Login error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ============================================
+   🔐 FORGOT PASSWORD - SEND RESET LINK
+=============================================== */
+router.post("/forgot-password", async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email)
+      return res.status(400).json({ message: "Email is required" });
+
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(404).json({ message: "User not found" });
+
+    // Create reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenHash = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // Save hashed token + expiry
+    user.resetPasswordToken = resetTokenHash;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 mins
+    await user.save();
+
+    const resetLink = `https://roomssarthi.vercel.app/reset-password/${resetToken}`;
+
+    // Send email
+    await transporter.sendMail({
+      from: `"RoomSaarthi 🏠" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Reset your RoomSaarthi password",
+      html: `
+        <h3>Hello ${user.name},</h3>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetLink}" 
+           style="display:inline-block;padding:10px 18px;background:#08A045;
+           color:#fff;border-radius:8px;text-decoration:none;">
+           Reset Password
+        </a>
+        <p>This link expires in 15 minutes.</p>
+      `,
+    });
+
+    res.json({ message: "Reset link sent to your email" });
+
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+/* ============================================
+   🔐 RESET PASSWORD - UPDATE PASSWORD
+=============================================== */
+router.post("/reset-password/:token", async (req, res) => {
+  try {
+    const resetTokenHash = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: resetTokenHash,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.json({ message: "Password reset successful!" });
+
+  } catch (error) {
+    console.error("Reset Password Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });

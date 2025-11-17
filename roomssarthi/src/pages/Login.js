@@ -106,9 +106,14 @@ const Login = () => {
             </Form.Group>
 
             <div className="text-end mb-3">
-              <a href="#!" className="text-primary text-decoration-none small">
-                Forgot password?
-              </a>
+            <a
+            className="text-primary text-decoration-none small"
+            onClick={() => navigate("/forgot-password")}
+            style={{ cursor: "pointer" }}
+            >
+            Forgot password?
+            </a>
+
             </div>
 
             <Button

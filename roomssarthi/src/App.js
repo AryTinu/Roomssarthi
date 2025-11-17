@@ -16,6 +16,10 @@ import Register from "./pages/Register";
 import AdminPanel from "./pages/AdminPanel";
 import FlatMateFinderPage from "./pages/FlatMateFinderPage";
 
+// Forgot / Reset Password Pages
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -49,6 +53,10 @@ function App() {
         {/* ✅ Authentication Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* 🔑 Forgot / Reset Password */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/* 🔐 Protected: Flatmate Finder Pages */}
         <Route
