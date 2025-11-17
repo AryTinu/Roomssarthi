@@ -27,10 +27,10 @@ const transporter = nodemailer.createTransport({
 
 
 // Test email connection once
-transporter.verify((err, success) => {
-  if (err) console.log("❌ Email service error:", err);
-  else console.log("✅ Email service is ready!");
-});
+// transporter.verify((err, success) => {
+//   if (err) console.log("❌ Email service error:", err);
+//   else console.log("✅ Email service is ready!");
+// });
 
 /* ============================================
    📝 SEND WELCOME EMAIL (Reusable Function)
