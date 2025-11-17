@@ -69,7 +69,7 @@ const sendWelcomeEmail = async (name, email) => {
 /* ============================================
    📝 REGISTER USER + SEND GREETING EMAIL
 =============================================== */
-router.post("/register", async (req, res) => {
+router.post("/Register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
