@@ -28,7 +28,7 @@ app.use(
 );
 
 // 2️⃣ Must allow preflight OPTIONS requests AFTER CORS setup
-app.options("*", cors());
+// app.options("*", cors());
 
 /* ============================================
    📦 Body Parser
