@@ -11,30 +11,34 @@ import emailRoutes from "./routes/emailRoutes.js";
 const app = express();
 
 /* ============================================
-   ⭐ FIXED CORS (Express v5 Safe)
+   ⭐ FIXED CORS (Correct Order for Render + Vercel)
 =============================================== */
+
+// 1️⃣ Main CORS middleware FIRST
 app.use(
   cors({
     origin: [
-      "http://localhost:3000",
-      "https://roomssarthi.vercel.app"
+      "https://roomssarthi.vercel.app",
+      "http://localhost:3000"
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
+// 2️⃣ Must allow preflight OPTIONS requests AFTER CORS setup
+app.options("*", cors());
 
 /* ============================================
-   📦 Middleware
+   📦 Body Parser
 =============================================== */
 app.use(express.json());
 
 /* ============================================
-   🚀 Routes
+   🚀 API Routes
 =============================================== */
 app.use("/api/email", emailRoutes);
-
 app.use("/api/auth", authRoutes);
 app.use("/api/listings", listingsRouter);
 
@@ -50,7 +54,7 @@ mongoose
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 /* ============================================
-   ☁ Cloudinary env check 
+   ☁ Cloudinary env check
 =============================================== */
 console.log("\n--- Environment Check ---");
 console.log("CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME || "❌ MISSING");
@@ -59,7 +63,7 @@ console.log("CLOUDINARY_API_SECRET:", process.env.CLOUDINARY_API_SECRET ? "✅ F
 console.log("--------------------------\n");
 
 /* ============================================
-   🟢 Server start
+   🟢 Start Server
 =============================================== */
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
