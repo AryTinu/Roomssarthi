@@ -3,68 +3,41 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import dotenv from "dotenv";
-import nodemailer from "nodemailer";
-import crypto from "crypto";   // <-- added
+import crypto from "crypto";
+import { Resend } from "resend";
 
 dotenv.config();
 const router = express.Router();
 
 /* ============================================
-   📧 NODEMAILER SETUP
+   📧 RESEND SETUP (NO SMTP REQUIRED)
 =============================================== */
-// EXPORT TRANSPORTER SO SERVER.JS CAN USE IT
-export const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-
-
-// Test email connection once
-// transporter.verify((err, success) => {
-//   if (err) console.log("❌ Email service error:", err);
-//   else console.log("✅ Email service is ready!");
-// });
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /* ============================================
-   📝 SEND WELCOME EMAIL (Reusable Function)
+   📨 SEND WELCOME EMAIL
 =============================================== */
 const sendWelcomeEmail = async (name, email) => {
-  const html = `
-    <div style="font-family: Poppins, sans-serif; color: #333;">
-      <h2 style="color: #08A045;">Welcome to RoomSaarthi, ${name}! 🎉</h2>
-      <p>We’re thrilled to have you here.</p>
-      <ul>
-        <li>🔎 Browse rooms, PGs & flats</li>
-        <li>🤝 Find trusted roommates</li>
-        <li>💬 Connect safely with owners</li>
-      </ul>
-
-      <a href="http://localhost:3000/login"
-        style="background-color:#08A045;color:white;padding:12px 18px;
-        border-radius:8px;text-decoration:none;font-weight:bold;">
-        Login to Your Account
-      </a>
-
-      <br/><br/>
-      <p style="color: #777;">— Team <strong>RoomSaarthi</strong> 🏡</p>
-    </div>
-  `;
-
   try {
-    await transporter.sendMail({
-      from: `"RoomSaarthi 🏠" <${process.env.EMAIL_USER}>`,
+    const result = await resend.emails.send({
+      from: process.env.SENDER_EMAIL,  // MUST MATCH RESEND VERIFIED DOMAIN!
       to: email,
       subject: `Welcome to RoomSaarthi, ${name}! 🎉`,
-      html,
+      html: `
+        <div style="font-family: Poppins, sans-serif; color: #333;">
+          <h2 style="color: #08A045;">Welcome to RoomSaarthi, ${name}! 🎉</h2>
+          <p>We’re excited to have you on board!</p>
+          <a href="https://roomssarthi.vercel.app/login"
+             style="background-color:#08A045;color:white;padding:12px 18px;
+             border-radius:8px;text-decoration:none;font-weight:bold;">
+             Login to Your Account
+          </a>
+        </div>
+      `,
     });
+
+    console.log("📧 Welcome Email Sent:", result);
+
   } catch (err) {
     console.error("❌ Error sending welcome email:", err);
   }
@@ -95,6 +68,7 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
+    // send async (non blocking)
     sendWelcomeEmail(name, email);
 
     return res.status(201).json({
@@ -162,36 +136,35 @@ router.post("/forgot-password", async (req, res) => {
     if (!user)
       return res.status(404).json({ message: "User not found" });
 
-    // Create reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
     const resetTokenHash = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
 
-    // Save hashed token + expiry
     user.resetPasswordToken = resetTokenHash;
-    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 mins
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
     await user.save();
 
     const resetLink = `https://roomssarthi.vercel.app/reset-password/${resetToken}`;
 
-    // Send email
-    await transporter.sendMail({
-      from: `"RoomSaarthi 🏠" <${process.env.EMAIL_USER}>`,
+    const result = await resend.emails.send({
+      from: process.env.SENDER_EMAIL,
       to: email,
       subject: "Reset your RoomSaarthi password",
       html: `
         <h3>Hello ${user.name},</h3>
-        <p>Click the link below to reset your password:</p>
-        <a href="${resetLink}" 
-           style="display:inline-block;padding:10px 18px;background:#08A045;
-           color:#fff;border-radius:8px;text-decoration:none;">
+        <p>Click below to reset your password:</p>
+        <a href="${resetLink}"
+           style="background:#08A045;padding:10px 18px;color:white;
+           border-radius:8px;text-decoration:none;">
            Reset Password
         </a>
         <p>This link expires in 15 minutes.</p>
       `,
     });
+
+    console.log("📧 Reset Email Sent:", result);
 
     res.json({ message: "Reset link sent to your email" });
 
@@ -202,7 +175,7 @@ router.post("/forgot-password", async (req, res) => {
 });
 
 /* ============================================
-   🔐 RESET PASSWORD - UPDATE PASSWORD
+   🔐 RESET PASSWORD
 =============================================== */
 router.post("/reset-password/:token", async (req, res) => {
   try {
@@ -234,6 +207,5 @@ router.post("/reset-password/:token", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 export default router;

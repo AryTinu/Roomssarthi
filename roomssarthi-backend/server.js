@@ -7,8 +7,6 @@ dotenv.config();
 import listingsRouter from "./routes/listings.js";
 import authRoutes from "./routes/auth.js";
 import emailRoutes from "./routes/emailRoutes.js";
-import { transporter } from "./routes/auth.js";
-
 
 const app = express();
 
@@ -21,7 +19,7 @@ app.use(
   cors({
     origin: [
       "https://roomssarthi.vercel.app",
-      "http://localhost:3000"
+      "http://localhost:3000",
     ],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -29,37 +27,17 @@ app.use(
   })
 );
 
-// 2️⃣ Must allow preflight OPTIONS requests AFTER CORS setup
-// app.options("*", cors());
-
 /* ============================================
    📦 Body Parser
 =============================================== */
 app.use(express.json());
 
-
-/*THIS HELPS TO KEEP ALIVE RENDER */
+/* ============================================
+   🟢 Render Keep Alive Route
+=============================================== */
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
-
-
-/* ============================================
-   🚀 SMTP TEST ROUTE (IMPORTANT)
-=============================================== */
-app.get("/test-smtp", (req, res) => {
-  transporter.verify((error, success) => {
-    if (error) {
-      console.log("❌ SMTP Error:", error);
-      return res.status(500).json(error);
-    } else {
-      console.log("✅ SMTP Connected!");
-      return res.send("SMTP Working: " + success);
-    }
-  });
-});
-
-
 
 /* ============================================
    🚀 API Routes
@@ -83,13 +61,24 @@ mongoose
    ☁ Cloudinary env check
 =============================================== */
 console.log("\n--- Environment Check ---");
-console.log("CLOUDINARY_CLOUD_NAME:", process.env.CLOUDINARY_CLOUD_NAME || "❌ MISSING");
-console.log("CLOUDINARY_API_KEY:", process.env.CLOUDINARY_API_KEY ? "✅ FOUND" : "❌ MISSING");
-console.log("CLOUDINARY_API_SECRET:", process.env.CLOUDINARY_API_SECRET ? "✅ FOUND" : "❌ MISSING");
+console.log(
+  "CLOUDINARY_CLOUD_NAME:",
+  process.env.CLOUDINARY_CLOUD_NAME || "❌ MISSING"
+);
+console.log(
+  "CLOUDINARY_API_KEY:",
+  process.env.CLOUDINARY_API_KEY ? "✅ FOUND" : "❌ MISSING"
+);
+console.log(
+  "CLOUDINARY_API_SECRET:",
+  process.env.CLOUDINARY_API_SECRET ? "✅ FOUND" : "❌ MISSING"
+);
 console.log("--------------------------\n");
 
 /* ============================================
    🟢 Start Server
 =============================================== */
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on port ${PORT}`)
+);
