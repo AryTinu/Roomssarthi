@@ -45,9 +45,16 @@ const NavigationBar = () => {
   };
 
   return (
-    <Navbar expand="lg" fixed="top" className="custom-navbar py-3">
+    <Navbar
+      expand="lg"
+      fixed="top" // <-- Bootstrap handles fixed navbar
+      className="custom-navbar py-3"
+    >
       <Container>
-        <Navbar.Brand href="/" className="d-flex align-items-center brand-name fw-bold fs-4">
+        <Navbar.Brand
+          href="/"
+          className="d-flex align-items-center brand-name fw-bold fs-4"
+        >
           <span className="room-black">Room</span>
           <span className="saarthi-green">Saarthi</span>
         </Navbar.Brand>
@@ -68,7 +75,7 @@ const NavigationBar = () => {
               Download App
             </Nav.Link>
 
-            {/* ✅ Conditional Rendering */}
+            {/* ✅ Conditional Login/Logout */}
             {!isLoggedIn ? (
               <>
                 <Button className="btn-gradient ms-3" onClick={handleLoginClick}>

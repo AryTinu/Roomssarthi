@@ -1,14 +1,23 @@
 /* ================================
-   GLOBAL STYLES
+   GLOBAL STYLES (FIXED)
 ================================= */
-body {
-    font-family: 'Poppins', sans-serif;
+
+/* Load clean fonts from Google (fix for corrupt local Roboto errors) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Raleway:wght@400;600;700&display=swap');
+
+html, body {
+    width: 100%;
     margin: 0;
     padding: 0;
-    scroll-behavior: smooth;
-    background-color: #efefef;
     overflow-x: hidden;
 }
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+    scroll-behavior: smooth;
+    background-color: #efefef;
+}
+
 /*Login buton*/
 /* Brand text inside Login page */
 .brand-text {
@@ -32,12 +41,12 @@ body {
 
 /* Room = black AMOLED look */
 .brand-room {
-  color: #000; /* or #0a0a0a for deeper AMOLED black */
+  color: #000;
 }
 
 /* Saarthi = fresh green accent */
 .brand-saarthi {
-  color: #00b16a; /* Green tone consistent with Navbar */
+  color: #00b16a;
   margin-left: 3px;
 }
 
@@ -63,6 +72,7 @@ body {
     text-align: center;
   }
 }
+
 a {
     text-decoration: none;
 }
@@ -72,12 +82,19 @@ h1, h2, h3 {
 }
 
 /* ================================
-   NAVBAR STYLES
+   NAVBAR STYLES (UPDATED)
 ================================= */
 .custom-navbar {
     background-color: #ffffff;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+    /* FINAL FIX FOR NAVBAR */
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999 !important;
 }
 
 .room-black {
@@ -86,7 +103,7 @@ h1, h2, h3 {
 }
 
 .saarthi-green {
-    color: #0eabff; /* bright cyan-blue accent */
+    color: #0eabff;
     font-weight: 700;
 }
 
@@ -100,7 +117,7 @@ h1, h2, h3 {
 }
 
 .nav-link-custom:hover {
-    color: #08A045 !important; /* hover accent */
+    color: #08A045 !important;
 }
 
 /* Animated underline on hover */
@@ -384,7 +401,7 @@ h1, h2, h3 {
 }
 
 .image {
-    overflow: hidden;
+    overflow: visible;
     height: 300px;
     width: 300px;
     position: relative;
@@ -402,8 +419,8 @@ h1, h2, h3 {
     z-index: 1;
     top: 50%;
     left: 50%;
-    width: 500px;
-    height: 500px;
+    width: 250px;
+    height: 250px;
     transform: translate(-140%, -50%);
     background-color: #007bff;
     opacity: 0.8;
@@ -463,11 +480,11 @@ h1, h2, h3 {
    UTILITY CLASSES
 ================================= */
 .saarthi-green {
-    color: #08A045; /* neon green */
+    color: #08A045;
     font-weight: bold;
 }
 
 .room-black {
-    color: #000000; /* true black for AMOLED */
+    color: #000000;
     font-weight: bold;
 }
