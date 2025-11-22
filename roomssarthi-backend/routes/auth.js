@@ -12,16 +12,17 @@ const router = express.Router();
 /* ============================================
    📧 NODEMAILER SETUP
 =============================================== */
-const transporter = nodemailer.createTransport({
+// EXPORT TRANSPORTER SO SERVER.JS CAN USE IT
+export const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false,  // ❗ MUST be false for port 587
+  secure: false,
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,   // 16-digit app password
+    pass: process.env.EMAIL_PASS,
   },
   tls: {
-    rejectUnauthorized: false, // Fixes SSL issues on Render
+    rejectUnauthorized: false,
   },
 });
 

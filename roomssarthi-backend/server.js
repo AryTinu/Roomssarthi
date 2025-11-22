@@ -7,6 +7,8 @@ dotenv.config();
 import listingsRouter from "./routes/listings.js";
 import authRoutes from "./routes/auth.js";
 import emailRoutes from "./routes/emailRoutes.js";
+import { transporter } from "./routes/auth.js";
+
 
 const app = express();
 
