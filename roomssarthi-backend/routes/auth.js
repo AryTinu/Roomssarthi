@@ -10,7 +10,7 @@ dotenv.config();
 const router = express.Router();
 
 /* ============================================
-   📧 BREVO API SETUP (NOT SMTP)
+   📧 BREVO API SETUP (NO SMTP)
 =============================================== */
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
@@ -44,7 +44,7 @@ const sendWelcomeEmail = async (name, email) => {
 
     console.log("📧 Welcome Email Sent!");
   } catch (err) {
-    console.log("❌ Welcome Email Error:", err);
+    console.error("❌ Welcome Email Error:", err);
   }
 };
 
@@ -73,12 +73,12 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
-    // send async
+    // Send email in background
     sendWelcomeEmail(name, email);
 
-    return res
-      .status(201)
-      .json({ message: "Registration successful!" });
+    return res.status(201).json({
+      message: "Registration successful!",
+    });
   } catch (error) {
     console.error("Register Error:", error);
     res.status(500).json({ message: "Server error" });
@@ -144,26 +144,23 @@ router.post("/forgot-password", async (req, res) => {
     const resetHash = crypto.createHash("sha256").update(resetToken).digest("hex");
 
     user.resetPasswordToken = resetHash;
-    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 min
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 mins
     await user.save();
 
     const resetLink = `https://roomssarthi.vercel.app/reset-password/${resetToken}`;
 
-    // Send email via Brevo API
     await brevoEmail.sendTransacEmail({
       sender: { email: process.env.BREVO_SENDER, name: "RoomSaarthi 🏡" },
       to: [{ email }],
       subject: "Reset Your RoomSaarthi Password",
       htmlContent: `
         <h3>Hello ${user.name},</h3>
-        <p>Click the button below to reset your password:</p>
-
+        <p>Click the link below to reset your password:</p>
         <a href="${resetLink}"
-           style="background:#08A045;color:#fff;padding:10px 18px;
+           style="background:#08A045;padding:10px 18px;color:white;
            border-radius:8px;text-decoration:none;">
            Reset Password
         </a>
-
         <p>This link expires in 15 minutes.</p>
       `,
     });
