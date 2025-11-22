@@ -7,14 +7,13 @@ dotenv.config();
 import listingsRouter from "./routes/listings.js";
 import authRoutes from "./routes/auth.js";
 import emailRoutes from "./routes/emailRoutes.js";
+import nodemailer from "nodemailer";   // ✅ Added
 
 const app = express();
 
 /* ============================================
    ⭐ FIXED CORS (Correct Order for Render + Vercel)
 =============================================== */
-
-// 1️⃣ Main CORS middleware FIRST
 app.use(
   cors({
     origin: [
@@ -37,6 +36,39 @@ app.use(express.json());
 =============================================== */
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
+});
+
+/* ============================================
+   📧 BREVO SMTP SETUP (NEW)
+=============================================== */
+const brevoTransporter = nodemailer.createTransport({
+  host: process.env.BREVO_HOST,  // smtp-relay.brevo.com
+  port: process.env.BREVO_PORT,  // 587
+  secure: false,
+  auth: {
+    user: process.env.BREVO_USER, // your Brevo email
+    pass: process.env.BREVO_PASS, // SMTP Key from Brevo
+  },
+});
+
+/* ============================================
+   🚀 BREVO SMTP TEST ROUTE (NEW)
+=============================================== */
+app.get("/test-email", async (req, res) => {
+  try {
+    await brevoTransporter.sendMail({
+      from: `"RoomSaarthi Test" <${process.env.BREVO_USER}>`,
+      to: process.env.BREVO_USER,  // will send to yourself
+      subject: "RoomSaarthi SMTP Test",
+      text: "Brevo SMTP is working 🎉",
+    });
+
+    console.log("📧 Test email sent successfully");
+    res.send("SMTP test email sent!");
+  } catch (error) {
+    console.error("❌ SMTP Test Error:", error);
+    res.status(500).json({ error });
+  }
 });
 
 /* ============================================
