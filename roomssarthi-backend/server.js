@@ -43,6 +43,23 @@ app.get("/health", (req, res) => {
 
 
 /* ============================================
+   🚀 SMTP TEST ROUTE (IMPORTANT)
+=============================================== */
+app.get("/test-smtp", (req, res) => {
+  transporter.verify((error, success) => {
+    if (error) {
+      console.log("❌ SMTP Error:", error);
+      return res.status(500).json(error);
+    } else {
+      console.log("✅ SMTP Connected!");
+      return res.send("SMTP Working: " + success);
+    }
+  });
+});
+
+
+
+/* ============================================
    🚀 API Routes
 =============================================== */
 app.use("/api/email", emailRoutes);
