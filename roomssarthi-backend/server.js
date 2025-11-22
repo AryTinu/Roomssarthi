@@ -7,7 +7,6 @@ dotenv.config();
 import listingsRouter from "./routes/listings.js";
 import authRoutes from "./routes/auth.js";
 import emailRoutes from "./routes/emailRoutes.js";
-import nodemailer from "nodemailer";   // ✅ Added
 
 const app = express();
 
@@ -39,34 +38,26 @@ app.get("/health", (req, res) => {
 });
 
 /* ============================================
-   📧 BREVO SMTP SETUP (NEW)
-=============================================== */
-const brevoTransporter = nodemailer.createTransport({
-  host: process.env.BREVO_HOST,  // smtp-relay.brevo.com
-  port: process.env.BREVO_PORT,  // 587
-  secure: false,
-  auth: {
-    user: process.env.BREVO_USER, // your Brevo email
-    pass: process.env.BREVO_PASS, // SMTP Key from Brevo
-  },
-});
-
-/* ============================================
-   🚀 BREVO SMTP TEST ROUTE (NEW)
+   🚀 TEST EMAIL (BREVO API)
 =============================================== */
 app.get("/test-email", async (req, res) => {
   try {
-    await brevoTransporter.sendMail({
-      from: `"RoomSaarthi Test" <${process.env.BREVO_USER}>`,
-      to: process.env.BREVO_USER,  // will send to yourself
-      subject: "RoomSaarthi SMTP Test",
-      text: "Brevo SMTP is working 🎉",
+    const { Resend } = await import("resend");
+
+    const resend = new Resend(process.env.BREVO_API_KEY);
+
+    const result = await resend.emails.send({
+      from: process.env.BREVO_SENDER,
+      to: process.env.ADMIN_EMAIL,
+      subject: "RoomSaarthi Email Test ✔",
+      html: "<h2>Brevo API Working 🎉</h2>",
     });
 
-    console.log("📧 Test email sent successfully");
-    res.send("SMTP test email sent!");
+    console.log("📧 Test Email Sent:", result);
+    res.send("Email sent successfully!");
+
   } catch (error) {
-    console.error("❌ SMTP Test Error:", error);
+    console.error("❌ Email Test Error:", error);
     res.status(500).json({ error });
   }
 });
@@ -82,10 +73,7 @@ app.use("/api/listings", listingsRouter);
    🍃 MongoDB connection
 =============================================== */
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 

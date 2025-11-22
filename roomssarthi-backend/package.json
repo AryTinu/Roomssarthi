@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@getbrevo/brevo": "^3.0.1",
     "bcryptjs": "^3.0.3",
     "body-parser": "^2.2.0",
     "cloudinary": "^2.7.0",
@@ -25,7 +26,8 @@
     "multer-storage-cloudinary": "^4.0.0",
     "node": "^24.9.0",
     "nodemailer": "^7.0.10",
-    "resend": "^6.5.2"
+    "resend": "^6.5.2",
+    "sib-api-v3-sdk": "^8.5.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"

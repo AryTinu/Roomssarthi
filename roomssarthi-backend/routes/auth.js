@@ -4,37 +4,32 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import dotenv from "dotenv";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import SibApiV3Sdk from "sib-api-v3-sdk";
 
 dotenv.config();
 const router = express.Router();
 
 /* ============================================
-   📧 BREVO SMTP SETUP
+   📧 BREVO API SETUP (NOT SMTP)
 =============================================== */
-const transporter = nodemailer.createTransport({
-  host: process.env.BREVO_HOST,      // smtp-relay.brevo.com
-  port: process.env.BREVO_PORT,      // 587
-  secure: false,
-  auth: {
-    user: process.env.BREVO_USER,    // your brevo email
-    pass: process.env.BREVO_PASS,    // smtp key
-  },
-});
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+defaultClient.authentications["api-key"].apiKey = process.env.BREVO_API_KEY;
+
+const brevoEmail = new SibApiV3Sdk.TransactionalEmailsApi();
 
 /* ============================================
    📨 SEND WELCOME EMAIL
 =============================================== */
 const sendWelcomeEmail = async (name, email) => {
   try {
-    await transporter.sendMail({
-      from: `"RoomSaarthi 🏡" <${process.env.BREVO_USER}>`,
-      to: email,
+    await brevoEmail.sendTransacEmail({
+      sender: { email: process.env.BREVO_SENDER, name: "RoomSaarthi 🏡" },
+      to: [{ email }],
       subject: `Welcome to RoomSaarthi, ${name}! 🎉`,
-      html: `
+      htmlContent: `
         <div style="font-family: Poppins, sans-serif; color: #333;">
           <h2 style="color: #08A045;">Welcome to RoomSaarthi, ${name}! 🎉</h2>
-          <p>We’re thrilled to have you join!</p>
+          <p>We’re thrilled to have you join us.</p>
 
           <a href="https://roomssarthi.vercel.app/login"
              style="background:#08A045;color:white;padding:12px 18px;
@@ -47,9 +42,9 @@ const sendWelcomeEmail = async (name, email) => {
       `,
     });
 
-    console.log("📧 Welcome email sent!");
+    console.log("📧 Welcome Email Sent!");
   } catch (err) {
-    console.error("❌ Error sending welcome email:", err);
+    console.log("❌ Welcome Email Error:", err);
   }
 };
 
@@ -78,20 +73,20 @@ router.post("/register", async (req, res) => {
 
     await newUser.save();
 
+    // send async
     sendWelcomeEmail(name, email);
 
-    return res.status(201).json({
-      message: "Registration successful! A welcome email has been sent.",
-    });
-
+    return res
+      .status(201)
+      .json({ message: "Registration successful!" });
   } catch (error) {
-    console.error("Register error:", error);
+    console.error("Register Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
 
 /* ============================================
-   🔐 LOGIN USER
+   🔐 LOGIN
 =============================================== */
 router.post("/login", async (req, res) => {
   try {
@@ -124,9 +119,8 @@ router.post("/login", async (req, res) => {
         isAdmin: user.isAdmin,
       },
     });
-
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Login Error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -145,28 +139,27 @@ router.post("/forgot-password", async (req, res) => {
     if (!user)
       return res.status(404).json({ message: "User not found" });
 
+    // Create reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenHash = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
+    const resetHash = crypto.createHash("sha256").update(resetToken).digest("hex");
 
-    user.resetPasswordToken = resetTokenHash;
-    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+    user.resetPasswordToken = resetHash;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 min
     await user.save();
 
     const resetLink = `https://roomssarthi.vercel.app/reset-password/${resetToken}`;
 
-    await transporter.sendMail({
-      from: `"RoomSaarthi 🏡" <${process.env.BREVO_USER}>`,
-      to: email,
-      subject: "Reset your RoomSaarthi password",
-      html: `
+    // Send email via Brevo API
+    await brevoEmail.sendTransacEmail({
+      sender: { email: process.env.BREVO_SENDER, name: "RoomSaarthi 🏡" },
+      to: [{ email }],
+      subject: "Reset Your RoomSaarthi Password",
+      htmlContent: `
         <h3>Hello ${user.name},</h3>
-        <p>Click the link below to reset your password:</p>
+        <p>Click the button below to reset your password:</p>
 
         <a href="${resetLink}"
-           style="background:#08A045;padding:10px 18px;color:white;
+           style="background:#08A045;color:#fff;padding:10px 18px;
            border-radius:8px;text-decoration:none;">
            Reset Password
         </a>
@@ -176,7 +169,6 @@ router.post("/forgot-password", async (req, res) => {
     });
 
     res.json({ message: "Reset link sent to your email" });
-
   } catch (error) {
     console.error("Forgot Password Error:", error);
     res.status(500).json({ message: "Server error" });
@@ -188,13 +180,13 @@ router.post("/forgot-password", async (req, res) => {
 =============================================== */
 router.post("/reset-password/:token", async (req, res) => {
   try {
-    const resetTokenHash = crypto
+    const resetHash = crypto
       .createHash("sha256")
       .update(req.params.token)
       .digest("hex");
 
     const user = await User.findOne({
-      resetPasswordToken: resetTokenHash,
+      resetPasswordToken: resetHash,
       resetPasswordExpire: { $gt: Date.now() },
     });
 
@@ -210,7 +202,6 @@ router.post("/reset-password/:token", async (req, res) => {
     await user.save();
 
     res.json({ message: "Password reset successful!" });
-
   } catch (error) {
     console.error("Reset Password Error:", error);
     res.status(500).json({ message: "Server error" });
