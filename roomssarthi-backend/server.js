@@ -7,11 +7,12 @@ dotenv.config();
 import listingsRouter from "./routes/listings.js";
 import authRoutes from "./routes/auth.js";
 import emailRoutes from "./routes/emailRoutes.js";
+import SibApiV3Sdk from "sib-api-v3-sdk";   // ✅ Brevo API SDK
 
 const app = express();
 
 /* ============================================
-   ⭐ FIXED CORS (Correct Order for Render + Vercel)
+   ⭐ FIXED CORS
 =============================================== */
 app.use(
   cors({
@@ -38,26 +39,34 @@ app.get("/health", (req, res) => {
 });
 
 /* ============================================
-   🚀 TEST EMAIL (BREVO API)
+   📧 BREVO API SETUP (MUST MATCH auth.js)
+=============================================== */
+const brevoClient = SibApiV3Sdk.ApiClient.instance;
+brevoClient.authentications["api-key"].apiKey =
+  process.env.BREVO_API_KEY;
+
+const brevoEmail = new SibApiV3Sdk.TransactionalEmailsApi();
+
+/* ============================================
+   🚀 BREVO TEST EMAIL (WORKING)
 =============================================== */
 app.get("/test-email", async (req, res) => {
   try {
-    const { Resend } = await import("resend");
-
-    const resend = new Resend(process.env.BREVO_API_KEY);
-
-    const result = await resend.emails.send({
-      from: process.env.BREVO_SENDER,
-      to: process.env.ADMIN_EMAIL,
-      subject: "RoomSaarthi Email Test ✔",
-      html: "<h2>Brevo API Working 🎉</h2>",
+    const result = await brevoEmail.sendTransacEmail({
+      sender: {
+        email: process.env.BREVO_SENDER,
+        name: "RoomSaarthi Test",
+      },
+      to: [{ email: process.env.ADMIN_EMAIL }],
+      subject: "RoomSaarthi Test Email ✔",
+      htmlContent: "<h2>Brevo API is working 🎉</h2>",
     });
 
     console.log("📧 Test Email Sent:", result);
-    res.send("Email sent successfully!");
+    res.send("Test email sent successfully!");
 
   } catch (error) {
-    console.error("❌ Email Test Error:", error);
+    console.error("❌ Brevo Test Error:", error);
     res.status(500).json({ error });
   }
 });
@@ -75,7 +84,7 @@ app.use("/api/listings", listingsRouter);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
+  .catch((err) => console.error("❌ MongoDB error:", err));
 
 /* ============================================
    ☁ Cloudinary env check
