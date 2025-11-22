@@ -7,6 +7,7 @@ body {
     padding: 0;
     scroll-behavior: smooth;
     background-color: #efefef;
+    overflow-x: hidden;
 }
 /*Login buton*/
 /* Brand text inside Login page */
@@ -372,8 +373,8 @@ h1, h2, h3 {
    CITIES SECTION (NEW ANIMATION)
 ================================= */
 .containerm {
-    min-height: 100vh;
-    overflow: hidden;
+    min-height: fit-content;
+    overflow: visible;
     width: 100%;
     padding: 2rem;
     display: flex;
