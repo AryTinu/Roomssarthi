@@ -108,6 +108,76 @@ export default function FlatMateFinderPage() {
       <div className="container-fluid px-4 py-5" style={{ marginTop: "90px" }}>
         <div className="bg-white rounded shadow-sm p-4 mb-4">
           {/* filters UI kept same */}
+          <div className="bg-white rounded shadow-sm p-4 mb-4">
+  <div className="row g-3">
+
+    {/* 🔍 Search by Title */}
+    <div className="col-md-3">
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Search name"
+        value={searchName}
+        onChange={(e) => setSearchName(e.target.value)}
+      />
+    </div>
+
+    {/* 📍 Location Filter */}
+    <div className="col-md-3">
+      <input
+        type="text"
+        className="form-control"
+        placeholder="Location"
+        value={locationFilter}
+        onChange={(e) => setLocationFilter(e.target.value)}
+      />
+    </div>
+
+    {/* 🚻 Gender Filter */}
+    <div className="col-md-2">
+      <select
+        className="form-select"
+        value={genderFilter}
+        onChange={(e) => setGenderFilter(e.target.value)}
+      >
+        <option value="any">Any Gender</option>
+        <option value="male">Male Only</option>
+        <option value="female">Female Only</option>
+      </select>
+    </div>
+
+    {/* 💰 Min Price */}
+    <div className="col-md-2">
+      <input
+        type="number"
+        className="form-control"
+        placeholder="Min Price"
+        value={minPrice}
+        onChange={(e) => setMinPrice(e.target.value)}
+      />
+    </div>
+
+    {/* 💰 Max Price */}
+    <div className="col-md-2">
+      <input
+        type="number"
+        className="form-control"
+        placeholder="Max Price"
+        value={maxPrice}
+        onChange={(e) => setMaxPrice(e.target.value)}
+      />
+    </div>
+
+    {/* 🧹 Clear Filters Button */}
+    <div className="col-md-2">
+      <button className="btn btn-secondary w-100" onClick={clearFilters}>
+        Clear Filters
+      </button>
+    </div>
+
+  </div>
+</div>
+
         </div>
 
         {/* LISTINGS */}
