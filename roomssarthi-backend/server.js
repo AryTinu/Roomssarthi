@@ -35,6 +35,13 @@ app.use(
 =============================================== */
 app.use(express.json());
 
+
+/*THIS HELPS TO KEEP ALIVE RENDER */
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
+
 /* ============================================
    🚀 API Routes
 =============================================== */
